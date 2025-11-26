@@ -11,11 +11,20 @@ class WorkoutPlanAgent:
         )
 
         self.prompt = ChatPromptTemplate.from_messages([
-            ("system", 
-             "You are a certified fitness trainer. Create structured daily workout plans "
-             "based on user fitness level, goals, and available equipment."),
-            ("human", "{query}")
-        ])
+        ("system", 
+        "You are a fitness coach. ALWAYS return output strictly in this JSON format:\n"
+        "{\n"
+        "  \"summary\": \"Short summary of the plan\",\n"
+        "  \"weekly_schedule\": [\n"
+        "    {\"day\": \"Monday\", \"workout\": \"...\"},\n"
+        "    {\"day\": \"Tuesday\", \"workout\": \"...\"}\n"
+        "  ]\n"
+        "}\n"
+        "No extra text, no markdown, only JSON."
+        ),
+        ("human", "{query}")
+    ])
+
 
     async def generate(self, user_data: dict):
 
