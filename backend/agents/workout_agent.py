@@ -35,19 +35,18 @@ class WorkoutPlanAgent:
         experience = user_data.get("experience")
         days = user_data.get("days")
 
-        query = f"""
-            Create a {days}-day workout plan.
-
-            User Details:
-            - Goal: {goal}
-            - Experience: {experience}
-            - Age: {age}
-            - Weight: {weight}
-            - Preferences: {preferences}
-
-            Return a clean structured plan.
-        """
+         query = (
+            f"Create a workout plan for:\n"
+            f"Age: {user_data['age']}\n"
+            f"Weight: {user_data['weight']}\n"
+            f"Goal: {user_data['goal']}\n"
+            f"Preferences: {user_data['preferences']}"
+        )
 
         chain = self.prompt | self.model
         result = chain.invoke({"query": query})
-        return result.content
+        try:
+            return json.loads(result.content)
+        except:
+            # fallback if model outputs invalid json
+            return {"summary": "Error parsing model output", "raw": result.content}
